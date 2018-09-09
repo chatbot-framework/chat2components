@@ -3,11 +3,16 @@ module.exports = function (text) {
     intents: [],
     entities: []
   }
-  if (/^\s*$|#|\/\//.test(text)) {
+  // ignore commented text // or #
+  // or prefixed with chat: or chatbot:
+  if (/^\s*($|#|\/\/|bot:|chatbot:)/i.test(text)) {
     components.text = text
     return components
   }
-  text = text.trim()
+
+  // remove prefix user or usr
+  let prefix = text.match(/^\s*(usr|user)\s*:\s*(.*)\s*$/i)
+  if (prefix) text = prefix[2]
 
   // extract intent ((intent))
   let matches = text.match(/\(\((.*)\)\)/)
